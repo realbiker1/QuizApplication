@@ -52,7 +52,18 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/fancy_button"
         android:text="3" />
+
+    <Button
+        android:id="@+id/exit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn3"
+        android:layout_marginTop="20dp"
+        android:background="@color/exit"
+        android:shadowColor="@color/exit"
+        android:text="Exit" />
 </RelativeLayout>
+
 
 
 

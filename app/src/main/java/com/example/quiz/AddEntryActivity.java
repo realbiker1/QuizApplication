@@ -52,7 +52,14 @@ public class AddEntryActivity extends AppCompatActivity {
 
         Button submit = findViewById(R.id.submit);
         submit.setOnClickListener(view -> submitEntry());
-
+        exitButton();
+    }
+    public void exitButton(){
+        Button btnExit = findViewById(R.id.exit);
+        btnExit.setOnClickListener(view -> {
+            Intent intent = new Intent(AddEntryActivity.this, new MainActivity().getClass());
+            startActivity(intent);
+        });
     }
 
     private void existingPhoto() {

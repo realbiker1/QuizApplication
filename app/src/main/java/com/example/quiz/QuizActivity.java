@@ -2,6 +2,7 @@ package com.example.quiz;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Pair;
@@ -23,6 +24,7 @@ public class QuizActivity extends AppCompatActivity {
     private Button btn1;
     private Button btn2;
     private Button btn3;
+    private Button btnExit;
 
     private void displayNextQuestion() {
 
@@ -74,8 +76,16 @@ public class QuizActivity extends AppCompatActivity {
                 displayNextQuestion();
             });
         }
+        exitButton();
     }
 
+    public void exitButton(){
+        Button btnExit = findViewById(R.id.exit);
+        btnExit.setOnClickListener(view -> {
+            Intent intent = new Intent(QuizActivity.this, new MainActivity().getClass());
+            startActivity(intent);
+        });
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

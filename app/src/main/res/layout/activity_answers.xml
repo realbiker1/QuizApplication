@@ -33,8 +33,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="#000000" />
+            <Button
+                android:id="@+id/exit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@color/exit"
+                android:shadowColor="@color/exit"
+                android:text="Exit" />
         </LinearLayout>
-
     </ScrollView>
 
 
