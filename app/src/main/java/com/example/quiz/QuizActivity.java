@@ -35,6 +35,7 @@ public class QuizActivity extends AppCompatActivity {
         simpleProgressBar=(ProgressBar) findViewById(R.id.simpleProgressBar); // initiate the progress bar
         simpleProgressBar.setMax(10);
         TextView scoreBoard = findViewById(R.id.scoreBoard);
+        TextView feedback = findViewById(R.id.feedback);
         scoreBoard.setText("Score: " + score + "/" + answered);
     CountDownTimer timer = new CountDownTimer(10000, 1000) {
 
@@ -52,7 +53,6 @@ public class QuizActivity extends AppCompatActivity {
             }
         }.start();
 
-     //   simpleProgressBar.setMax(questions.size());
         simpleProgressBar.setProgress(score);
         // Set the imageView to be the first element in the question array
         imageView.setImageBitmap(questions.get(answered).first);
@@ -90,6 +90,7 @@ public class QuizActivity extends AppCompatActivity {
                 returnToMainMenu();
             }
             else {
+                feedback.setText("");
                 timer.cancel();
                 displayNextQuestion();
             }
@@ -105,6 +106,7 @@ public class QuizActivity extends AppCompatActivity {
                     returnToMainMenu();
                 }
                 else {
+                    feedback.setText("Right answer was: " + correctAnswer);
                     timer.cancel();
                     displayNextQuestion();
                 }

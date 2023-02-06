@@ -76,6 +76,13 @@
         android:text="@string/score"
         android:textSize="20sp"
         android:layout_below="@id/exit"/>
+    <TextView
+        android:id="@+id/feedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="20sp"
+        android:layout_below="@id/scoreBoard"/>
 </RelativeLayout>
 
 
