@@ -10,17 +10,19 @@ import android.widget.Button;
 import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
-
+ public static boolean initialized = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+    if(!initialized) {
         // Initialize question list, can be accessed regardless of what activity started first
-        Bitmap q1 = BitmapFactory.decodeResource(getResources(),R.drawable.bulbasaur);
-        Bitmap q2 = BitmapFactory.decodeResource(getResources(),R.drawable.charmander);
-        Bitmap q3 = BitmapFactory.decodeResource(getResources(),R.drawable.marill);
+        Bitmap q1 = BitmapFactory.decodeResource(getResources(), R.drawable.bulbasaur);
+        Bitmap q2 = BitmapFactory.decodeResource(getResources(), R.drawable.charmander);
+        Bitmap q3 = BitmapFactory.decodeResource(getResources(), R.drawable.marill);
         AnswersActivity.initializeQuestions(q1, q2, q3);
+        initialized = true;
+    }
 
         // Launches the quiz activity
         Button quizBtn = findViewById(R.id.quizBtn);
