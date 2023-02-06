@@ -37,10 +37,16 @@
                 android:id="@+id/exit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/Sort"
                 android:layout_marginTop="20dp"
                 android:background="@color/exit"
                 android:shadowColor="@color/exit"
                 android:text="Exit" />
+            <Button
+                android:id="@+id/Sort"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sort" />
         </LinearLayout>
     </ScrollView>
 

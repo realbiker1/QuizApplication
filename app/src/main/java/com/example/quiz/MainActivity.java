@@ -17,9 +17,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     if(!initialized) {
         // Initialize question list, can be accessed regardless of what activity started first
-        Bitmap q1 = BitmapFactory.decodeResource(getResources(), R.drawable.bulbasaur);
+        Bitmap q3 = BitmapFactory.decodeResource(getResources(), R.drawable.bulbasaur);
         Bitmap q2 = BitmapFactory.decodeResource(getResources(), R.drawable.charmander);
-        Bitmap q3 = BitmapFactory.decodeResource(getResources(), R.drawable.marill);
+        Bitmap q1 = BitmapFactory.decodeResource(getResources(), R.drawable.marill);
         AnswersActivity.initializeQuestions(q1, q2, q3);
         initialized = true;
     }
