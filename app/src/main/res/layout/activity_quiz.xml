@@ -62,6 +62,20 @@
         android:background="@color/exit"
         android:shadowColor="@color/exit"
         android:text="Exit" />
+    <ProgressBar
+        android:id="@+id/simpleProgressBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:max="10"
+        android:progress="5"/>
+    <TextView
+        android:id="@+id/scoreBoard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/score"
+        android:textSize="20sp"
+        android:layout_below="@id/exit"/>
 </RelativeLayout>
 
 

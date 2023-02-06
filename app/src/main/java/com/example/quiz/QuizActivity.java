@@ -2,12 +2,16 @@ package com.example.quiz;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Pair;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.*;
@@ -25,15 +29,31 @@ public class QuizActivity extends AppCompatActivity {
     private Button btn2;
     private Button btn3;
     private Button btnExit;
-
+    public ProgressBar simpleProgressBar;
+    @SuppressLint("SetTextI18n")
     private void displayNextQuestion() {
+        simpleProgressBar=(ProgressBar) findViewById(R.id.simpleProgressBar); // initiate the progress bar
+        simpleProgressBar.setMax(10);
+        TextView scoreBoard = findViewById(R.id.scoreBoard);
+        scoreBoard.setText("Score: " + score + "/" + answered);
+    CountDownTimer timer = new CountDownTimer(10000, 1000) {
 
-        // Checks if the user has answered all the questions in the list
-        if (answered == questions.size()) {
-            Toast.makeText(QuizActivity.this, "All questions answered!", Toast.LENGTH_SHORT).show();
-            return;
-        }
+            public void onTick(long millisUntilFinished) {
+                simpleProgressBar.setProgress((int) (millisUntilFinished/1000));
+            }
+            public void onFinish() {
+               answered++;
+               if(answered==questions.size()){
+                   returnToMainMenu();
+               }
+               else {
+                   displayNextQuestion();
+               }
+            }
+        }.start();
 
+     //   simpleProgressBar.setMax(questions.size());
+        simpleProgressBar.setProgress(score);
         // Set the imageView to be the first element in the question array
         imageView.setImageBitmap(questions.get(answered).first);
 
@@ -65,7 +85,14 @@ public class QuizActivity extends AppCompatActivity {
         buttons.get(0).setOnClickListener(view -> {
             score++;
             answered++;
-            displayNextQuestion();
+            if(answered==questions.size()){
+                timer.cancel();
+                returnToMainMenu();
+            }
+            else {
+                timer.cancel();
+                displayNextQuestion();
+            }
         });
 
         // Set the wrong answer buttons
@@ -73,12 +100,22 @@ public class QuizActivity extends AppCompatActivity {
             buttons.get(i).setText(wrongAnswers.get(i-1));
             buttons.get(i).setOnClickListener(view -> {
                 answered++;
-                displayNextQuestion();
+                if(answered==questions.size()){
+                    timer.cancel();
+                    returnToMainMenu();
+                }
+                else {
+                    timer.cancel();
+                    displayNextQuestion();
+                }
             });
         }
         exitButton();
     }
-
+public void returnToMainMenu(){
+        Intent intent = new Intent(QuizActivity.this, new MainActivity().getClass());
+        startActivity(intent);
+}
     public void exitButton(){
         Button btnExit = findViewById(R.id.exit);
         btnExit.setOnClickListener(view -> {
@@ -86,6 +123,9 @@ public class QuizActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
