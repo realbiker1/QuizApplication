@@ -13,6 +13,7 @@ import java.util.*;
 
 public class QuizActivity extends AppCompatActivity {
 
+    public boolean choice;
     int score = 0;
     int answered = 0;
 
@@ -24,8 +25,12 @@ public class QuizActivity extends AppCompatActivity {
     private Button btn2;
     private Button btn3;
 
-    private void displayNextQuestion() {
 
+    private void displayNextQuestion() {
+        if(choice){
+            //Start Timer
+            System.out.println("ÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅÅ");
+        }
         // Checks if the user has answered all the questions in the list
         if (answered == questions.size()) {
             Toast.makeText(QuizActivity.this, "All questions answered!", Toast.LENGTH_SHORT).show();
@@ -77,9 +82,11 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
+        Bundle extras = getIntent().getExtras();
+        choice = extras.getBoolean("choice");
 
         // Fetch questions
         questions = AnswersActivity.getQuestions();
