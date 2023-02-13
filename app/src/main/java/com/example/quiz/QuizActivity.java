@@ -17,7 +17,8 @@ import android.widget.Toast;
 import java.util.*;
 
 public class QuizActivity extends AppCompatActivity {
-
+    public boolean choice;
+    public CountDownTimer timer;
     int score = 0;
     int answered = 0;
 
@@ -33,26 +34,31 @@ public class QuizActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void displayNextQuestion() {
         simpleProgressBar=(ProgressBar) findViewById(R.id.simpleProgressBar); // initiate the progress bar
-        simpleProgressBar.setMax(10);
         TextView scoreBoard = findViewById(R.id.scoreBoard);
         TextView feedback = findViewById(R.id.feedback);
         scoreBoard.setText("Score: " + score + "/" + answered);
-    CountDownTimer timer = new CountDownTimer(10000, 1000) {
+        if(choice) {
+            simpleProgressBar.setMax(10);
 
-            public void onTick(long millisUntilFinished) {
-                simpleProgressBar.setProgress((int) (millisUntilFinished/1000));
-            }
-            public void onFinish() {
-               answered++;
-               if(answered==questions.size()){
-                   returnToMainMenu();
-               }
-               else {
-                   displayNextQuestion();
-               }
-            }
-        }.start();
+            timer = new CountDownTimer(10000, 1000) {
 
+                public void onTick(long millisUntilFinished) {
+                    simpleProgressBar.setProgress((int) (millisUntilFinished / 1000));
+                }
+
+                public void onFinish() {
+                    answered++;
+                    if (answered == questions.size()) {
+                        returnToMainMenu();
+                    } else {
+                        displayNextQuestion();
+                    }
+                }
+            }.start();
+        }
+        else{
+            simpleProgressBar.setMax(questions.size());
+        }
         simpleProgressBar.setProgress(score);
         // Set the imageView to be the first element in the question array
         imageView.setImageBitmap(questions.get(answered).first);
@@ -86,12 +92,16 @@ public class QuizActivity extends AppCompatActivity {
             score++;
             answered++;
             if(answered==questions.size()){
-                timer.cancel();
+                if(choice) {
+                    timer.cancel();
+                }
                 returnToMainMenu();
             }
             else {
                 feedback.setText("");
-                timer.cancel();
+                if(choice) {
+                    timer.cancel();
+                }
                 displayNextQuestion();
             }
         });
@@ -102,12 +112,16 @@ public class QuizActivity extends AppCompatActivity {
             buttons.get(i).setOnClickListener(view -> {
                 answered++;
                 if(answered==questions.size()){
-                    timer.cancel();
+                    if(choice) {
+                        timer.cancel();
+                    }
                     returnToMainMenu();
                 }
                 else {
                     feedback.setText("Right answer was: " + correctAnswer);
-                    timer.cancel();
+                    if(choice) {
+                        timer.cancel();
+                    }
                     displayNextQuestion();
                 }
             });
@@ -132,7 +146,8 @@ public void returnToMainMenu(){
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
-
+        Bundle values = getIntent().getExtras();
+        choice = values.getBoolean("choice");
         // Fetch questions
         questions = AnswersActivity.getQuestions();
 
