@@ -71,10 +71,16 @@ public class AddEntryActivity extends AppCompatActivity {
     private static final int CAMERA_REQUEST = 1888;
 
     private void newPhoto() {
-        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        i.setType("image/*");
-        i.setAction(Intent.ACTION_GET_CONTENT);
-        getPhoto.launch(i);
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAMERA_REQUEST);
+    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            imageView.setImageBitmap(photo);
+            picture = photo;
+        }
     }
 
     ActivityResultLauncher<Intent> getPhoto = registerForActivityResult(
