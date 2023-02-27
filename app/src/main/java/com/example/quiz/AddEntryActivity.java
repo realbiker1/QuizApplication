@@ -68,6 +68,7 @@ public class AddEntryActivity extends AppCompatActivity {
         i.setAction(Intent.ACTION_GET_CONTENT);
         getPhoto.launch(i);
     }
+    private static final int CAMERA_REQUEST = 1888;
 
     private void newPhoto() {
         Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -103,5 +104,6 @@ public class AddEntryActivity extends AppCompatActivity {
         if (picture != null && !answer.equals("")) {
             AnswersActivity.addQuestion(picture, answer);
         }
+        finish();
     }
 }
