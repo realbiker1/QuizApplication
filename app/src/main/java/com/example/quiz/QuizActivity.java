@@ -131,6 +131,7 @@ public class QuizActivity extends AppCompatActivity {
 public void returnToMainMenu(){
         Intent intent = new Intent(QuizActivity.this, new MainActivity().getClass());
         startActivity(intent);
+        finish();
 }
     public void exitButton(){
         Button btnExit = findViewById(R.id.exit);

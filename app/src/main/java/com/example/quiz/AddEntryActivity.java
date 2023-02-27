@@ -6,11 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Camera;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -33,7 +31,6 @@ import java.util.ArrayList;
 
 public class AddEntryActivity extends AppCompatActivity {
 
-    private static final int REQUEST_IMAGE_CAPTURE = 1888;
     private Bitmap picture;
     private EditText answerText;
     private ImageView imageView;
@@ -71,22 +68,19 @@ public class AddEntryActivity extends AppCompatActivity {
         i.setAction(Intent.ACTION_GET_CONTENT);
         getPhoto.launch(i);
     }
+    private static final int CAMERA_REQUEST = 1888;
 
     private void newPhoto() {
-
-        //Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        //i.setType("image/*");
-        //i.setAction(Intent.ACTION_GET_CONTENT);
-        //getPhoto.launch(i);
-
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        try {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        } catch (ActivityNotFoundException e) {
-            // display error state to the user
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAMERA_REQUEST);
+    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            imageView.setImageBitmap(photo);
+            picture = photo;
         }
-
-
     }
 
     ActivityResultLauncher<Intent> getPhoto = registerForActivityResult(
@@ -117,6 +111,5 @@ public class AddEntryActivity extends AppCompatActivity {
             AnswersActivity.addQuestion(picture, answer);
         }
         finish();
-
     }
 }
