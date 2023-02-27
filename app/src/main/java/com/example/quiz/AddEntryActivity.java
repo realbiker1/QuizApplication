@@ -6,9 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Camera;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -31,6 +33,7 @@ import java.util.ArrayList;
 
 public class AddEntryActivity extends AppCompatActivity {
 
+    private static final int REQUEST_IMAGE_CAPTURE = 1888;
     private Bitmap picture;
     private EditText answerText;
     private ImageView imageView;
@@ -70,10 +73,20 @@ public class AddEntryActivity extends AppCompatActivity {
     }
 
     private void newPhoto() {
-        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        i.setType("image/*");
-        i.setAction(Intent.ACTION_GET_CONTENT);
-        getPhoto.launch(i);
+
+        //Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        //i.setType("image/*");
+        //i.setAction(Intent.ACTION_GET_CONTENT);
+        //getPhoto.launch(i);
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        try {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        } catch (ActivityNotFoundException e) {
+            // display error state to the user
+        }
+
+
     }
 
     ActivityResultLauncher<Intent> getPhoto = registerForActivityResult(
@@ -103,5 +116,7 @@ public class AddEntryActivity extends AppCompatActivity {
         if (picture != null && !answer.equals("")) {
             AnswersActivity.addQuestion(picture, answer);
         }
+        finish();
+
     }
 }

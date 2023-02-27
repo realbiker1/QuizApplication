@@ -103,6 +103,7 @@ public class AnswersActivity extends AppCompatActivity {
         btnExit.setOnClickListener(view -> {
             Intent intent = new Intent(AnswersActivity.this, new MainActivity().getClass());
             startActivity(intent);
+            finish();
         });
     }
 }

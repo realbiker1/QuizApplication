@@ -137,6 +137,7 @@ public void returnToMainMenu(){
         btnExit.setOnClickListener(view -> {
             Intent intent = new Intent(QuizActivity.this, new MainActivity().getClass());
             startActivity(intent);
+            finish();
         });
     }
 

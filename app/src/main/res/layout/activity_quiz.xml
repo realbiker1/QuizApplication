@@ -69,13 +69,16 @@
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:max="10"
         android:progress="5"/>
+
     <TextView
         android:id="@+id/scoreBoard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/exit"
+        android:layout_marginTop="-544dp"
         android:text="@string/score"
-        android:textSize="20sp"
-        android:layout_below="@id/exit"/>
+        android:textSize="20sp" />
+
     <TextView
         android:id="@+id/feedback"
         android:layout_width="wrap_content"
