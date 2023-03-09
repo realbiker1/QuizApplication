@@ -31,8 +31,8 @@ import java.util.ArrayList;
 
 public class AddEntryActivity extends AppCompatActivity {
 
-    private Bitmap picture;
-    private EditText answerText;
+    Bitmap picture;
+    EditText answerText;
     private ImageView imageView;
 
     @Override
@@ -104,7 +104,7 @@ public class AddEntryActivity extends AppCompatActivity {
                 }
             });
 
-    private void submitEntry() {
+    void submitEntry() {
         String answer = answerText.getText().toString();
         System.out.println("Added image with answer " + answer);
         if (picture != null && !answer.equals("")) {
