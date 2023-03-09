@@ -17,7 +17,7 @@ import android.widget.Toast;
 import java.util.*;
 
 public class QuizActivity extends AppCompatActivity {
-    public boolean choice;
+    public boolean choice = false;
     public CountDownTimer timer;
     int score = 0;
     int answered = 0;
@@ -29,6 +29,7 @@ public class QuizActivity extends AppCompatActivity {
     private Button btn1;
     private Button btn2;
     private Button btn3;
+
     private Button btnExit;
     public ProgressBar simpleProgressBar;
     @SuppressLint("SetTextI18n")
@@ -88,6 +89,7 @@ public class QuizActivity extends AppCompatActivity {
 
         // Set the correct answer button
         buttons.get(0).setText(correctAnswer);
+
         buttons.get(0).setOnClickListener(view -> {
             score++;
             answered++;
@@ -149,7 +151,12 @@ public void returnToMainMenu(){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
         Bundle values = getIntent().getExtras();
-        choice = values.getBoolean("choice");
+        try {
+            choice = values.getBoolean("choice");
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
         // Fetch questions
         questions = AnswersActivity.getQuestions();
 

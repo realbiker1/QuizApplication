@@ -52,7 +52,7 @@ public class AnswersActivity extends AppCompatActivity {
         exitButton();
     }
     public void setPicturesAndAnswers(ArrayList<Pair<Bitmap, String>> pairs) {
-        LinearLayout container = findViewById(R.id.container);
+        LinearLayout container = findViewById(R.id.ansContainer);
         for (Pair<Bitmap, String> imageData : pairs) {
             ImageView imageView = new ImageView(this);
             imageView.setImageBitmap(imageData.first);
