@@ -38,9 +38,11 @@ public class MainActivity extends AppCompatActivity {
         // Launches the quiz activity
         Button quizBtn = findViewById(R.id.quizBtn);
         quizBtn.setOnClickListener(view -> {
+            Bundle b = new Bundle();
+            b.putBoolean("choice", false);
             Intent intent = new Intent(MainActivity.this, QuizActivity.class);
-            intent.putExtra("choice",false);
-          startActivity(intent);
+            intent.putExtras(b);
+            startActivity(intent);
         });
 
         // Launches the Answers activity
