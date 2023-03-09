@@ -18,7 +18,8 @@ public interface PokemonDAO {
     @Delete
     void delete(Pokemon pokemon);
 
-    @Query("SELECT * FROM pokemons") LiveData<List<Pokemon>> getAll();
+    @Query("SELECT * FROM pokemons")
+    List<Pokemon> getAll();
 
     @Update
     void updateUsers(Pokemon pokemon);

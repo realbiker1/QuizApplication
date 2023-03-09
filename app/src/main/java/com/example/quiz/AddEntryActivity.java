@@ -4,6 +4,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.lifecycle.LiveData;
+import androidx.room.Insert;
+import androidx.room.Room;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,6 +16,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.util.Pair;
 import android.view.View;
@@ -22,12 +26,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.Console;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AddEntryActivity extends AppCompatActivity {
 
@@ -108,6 +115,23 @@ public class AddEntryActivity extends AppCompatActivity {
         String answer = answerText.getText().toString();
         System.out.println("Added image with answer " + answer);
         if (picture != null && !answer.equals("")) {
+            int size = picture.getRowBytes() * picture.getHeight();
+            ByteBuffer byteBuffer = ByteBuffer.allocate(size);
+            picture.copyPixelsToBuffer(byteBuffer);
+            byte[] byteArray = byteBuffer.array();
+            Pokemon pokemon = new Pokemon(answer,byteArray);
+            AppDatabase db = Room.databaseBuilder(getApplicationContext(),AppDatabase.class,"pokemons").allowMainThreadQueries().build();
+            db.pokemonDAO().insertAll(pokemon);
+            db.pokemonDAO().updateUsers(pokemon);
+
+                List<Pokemon> pokemonList = db.pokemonDAO().getAll();
+                Pokemon pokemon1 = pokemonList.get(0);
+                for(Pokemon a : pokemonList){
+                    System.out.println("Navn: " + a.getName());
+                }
+           System.out.println("Pok1: " + pokemon1.getName());
+            System.out.println("POKEMON: " + db.pokemonDAO().find(answer));
+            System.out.println("Poke ans: " + db.pokemonDAO().getAll());
             AnswersActivity.addQuestion(picture, answer);
         }
         finish();

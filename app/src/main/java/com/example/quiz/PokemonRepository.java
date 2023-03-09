@@ -11,10 +11,10 @@ import java.util.List;
 public class PokemonRepository {
     private MutableLiveData<List<Pokemon>> searchResults =
             new MutableLiveData<>();
-    private LiveData<List<Pokemon>> allPokemons;
+    private List<Pokemon> allPokemons;
     private PokemonDAO pokemonDAO;
 
-    public LiveData<List<Pokemon>> getAllPokemons() {
+    public List<Pokemon> getAllPokemons() {
         return allPokemons;
     }
 
