@@ -16,7 +16,6 @@ public class Pokemon implements Comparable{
         private byte[] bitmap;
         @Ignore
         private boolean marked_for_delete = false;
-        @Ignore
         public Pokemon(String name, byte[] bitmap) {
             this.name = name;
             this.bitmap = bitmap;
