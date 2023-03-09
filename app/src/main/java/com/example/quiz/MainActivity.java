@@ -2,6 +2,8 @@ package com.example.quiz;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +14,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.os.Bundle;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
  public static boolean initialized = false;
@@ -24,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
         Bitmap q3 = BitmapFactory.decodeResource(getResources(), R.drawable.bulbasaur);
         Bitmap q2 = BitmapFactory.decodeResource(getResources(), R.drawable.charmander);
         Bitmap q1 = BitmapFactory.decodeResource(getResources(), R.drawable.marill);
+
+        AppDatabase db = Room.databaseBuilder(getApplicationContext(),AppDatabase.class,"pokemons").allowMainThreadQueries().build();
+        db.pokemonDAO().nukeTable();
         AnswersActivity.initializeQuestions(q1, q2, q3);
         initialized = true;
     }
@@ -31,6 +39,10 @@ public class MainActivity extends AppCompatActivity {
         // Launches the quiz activity
         Button quizBtn = findViewById(R.id.quizBtn);
         quizBtn.setOnClickListener(view -> {
+            AppDatabase db = Room.databaseBuilder(getApplicationContext(),AppDatabase.class,"pokemons").allowMainThreadQueries().build();
+            for(Pokemon x : db.pokemonDAO().getAll()){
+                AnswersActivity.addQuestion(convertByteToBitmap(x.getBitmap()),x.getName());
+            }
             Intent intent = new Intent(MainActivity.this, QuizActivity.class);
             intent.putExtra("choice",false);
           startActivity(intent);
@@ -81,5 +93,10 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+    public Bitmap convertByteToBitmap(byte [] picture){
+        InputStream targetStream = new ByteArrayInputStream(picture);
+
+        return BitmapFactory.decodeStream(targetStream);
     }
 }
