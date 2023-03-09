@@ -125,14 +125,13 @@ public class AddEntryActivity extends AppCompatActivity {
             db.pokemonDAO().updateUsers(pokemon);
 
                 List<Pokemon> pokemonList = db.pokemonDAO().getAll();
-                Pokemon pokemon1 = pokemonList.get(0);
                 for(Pokemon a : pokemonList){
                     System.out.println("Navn: " + a.getName());
+                    AnswersActivity.addQuestion(picture, answer);
+
                 }
-           System.out.println("Pok1: " + pokemon1.getName());
             System.out.println("POKEMON: " + db.pokemonDAO().find(answer));
             System.out.println("Poke ans: " + db.pokemonDAO().getAll());
-            AnswersActivity.addQuestion(picture, answer);
         }
         finish();
     }

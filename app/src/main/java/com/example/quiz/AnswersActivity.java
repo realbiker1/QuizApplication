@@ -1,6 +1,7 @@
 package com.example.quiz;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -40,6 +41,8 @@ public class AnswersActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_answers);
+        AppDatabase db = Room.databaseBuilder
+                (getApplicationContext(),AppDatabase.class,"pokemons").allowMainThreadQueries().build();
 
         //To do
       /*  Button sortBtn = findViewById(R.id.Sort);
@@ -47,12 +50,15 @@ public class AnswersActivity extends AppCompatActivity {
             Collections.reverse(questions);
             setPicturesAndAnswers(questions);
         });*/
+
+
+
         sortQuestions();
         setPicturesAndAnswers(questions);
         exitButton();
     }
     public void setPicturesAndAnswers(ArrayList<Pair<Bitmap, String>> pairs) {
-        LinearLayout container = findViewById(R.id.container);
+        LinearLayout container = findViewById(R.id.ansContainer);
         for (Pair<Bitmap, String> imageData : pairs) {
             ImageView imageView = new ImageView(this);
             imageView.setImageBitmap(imageData.first);
@@ -106,4 +112,5 @@ public class AnswersActivity extends AppCompatActivity {
             finish();
         });
     }
+
 }

@@ -2,6 +2,8 @@ package com.example.quiz;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,11 +21,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        AppDatabase db = Room.databaseBuilder
+                (getApplicationContext(),AppDatabase.class,"pokemons").allowMainThreadQueries().build();
     if(!initialized) {
         // Initialize question list, can be accessed regardless of what activity started first
         Bitmap q3 = BitmapFactory.decodeResource(getResources(), R.drawable.bulbasaur);
         Bitmap q2 = BitmapFactory.decodeResource(getResources(), R.drawable.charmander);
         Bitmap q1 = BitmapFactory.decodeResource(getResources(), R.drawable.marill);
+
+
+
         AnswersActivity.initializeQuestions(q1, q2, q3);
         initialized = true;
     }
