@@ -1,5 +1,6 @@
 package com.example.quiz;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -10,12 +11,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Button;
 
+import androidx.room.Room;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,7 +40,7 @@ public class QuizActivityTest {
     @Before
     public void setUp() {
         // Launch MainActivity and perform necessary initializations
-        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         ActivityScenario<MainActivity> activityScenario = ActivityScenario.launch(intent);
 
         activityScenario.onActivity(activity -> {
@@ -66,5 +69,15 @@ public class QuizActivityTest {
 
         activityScenario.close();
     }
-
+    @Test
+    public void testDB(){
+        AppDatabase db = Room.databaseBuilder(getApplicationContext(),AppDatabase.class,"pokemons").allowMainThreadQueries().build();
+        java.util.List<Pokemon> items = db.pokemonDAO().getAll();
+        Assert.assertEquals(items.size(),0);
+        Pokemon pokemon = new Pokemon("Pika",null);
+        db.pokemonDAO().insertAll(pokemon);
+        Assert.assertEquals(items.size(),1);
+        db.pokemonDAO().nukeTable();
+        Assert.assertEquals(items.size(),0);
+    }
 }
