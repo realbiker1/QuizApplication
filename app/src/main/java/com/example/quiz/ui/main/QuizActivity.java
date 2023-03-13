@@ -1,4 +1,4 @@
-package com.example.quiz;
+package com.example.quiz.ui.main;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,7 +12,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.example.quiz.R;
 
 import java.util.*;
 

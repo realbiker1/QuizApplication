@@ -1,19 +1,19 @@
-package com.example.quiz;
+package com.example.quiz.ui.main;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.os.Bundle;
+
+import com.example.quiz.AppDatabase;
+import com.example.quiz.R;
 
 public class MainActivity extends AppCompatActivity {
  public static boolean initialized = false;

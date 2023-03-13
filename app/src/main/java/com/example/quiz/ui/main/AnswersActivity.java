@@ -1,4 +1,4 @@
-package com.example.quiz;
+package com.example.quiz.ui.main;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
@@ -15,6 +15,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.example.quiz.AppDatabase;
+import com.example.quiz.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
