@@ -19,10 +19,11 @@ public interface PokemonDAO {
     void delete(Pokemon pokemon);
 
     @Query("SELECT * FROM pokemons")
-    List<Pokemon> getAll();
+    LiveData<List<Pokemon>> getAllPokemons();
     @Query("DELETE FROM pokemons") void nukeTable();
     @Update
     void updateUsers(Pokemon pokemon);
 
-    @Query("SELECT * FROM pokemons WHERE name = :name") List<Pokemon> find(String name);
+    @Query("SELECT * FROM pokemons WHERE name = :name")
+    List<Pokemon> find(String name);
 }

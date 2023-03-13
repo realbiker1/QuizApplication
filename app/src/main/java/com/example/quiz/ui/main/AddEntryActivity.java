@@ -3,10 +3,8 @@ package com.example.quiz.ui.main;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-<<<<<<< HEAD:app/src/main/java/com/example/quiz/ui/main/AddEntryActivity.java
-=======
 import androidx.core.content.res.ResourcesCompat;
->>>>>>> c31df40bc3989f080da1881075ac4cc1a9115c55:app/src/main/java/com/example/quiz/AddEntryActivity.java
+import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 
 import android.app.Activity;
@@ -19,17 +17,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-<<<<<<< HEAD:app/src/main/java/com/example/quiz/ui/main/AddEntryActivity.java
 import com.example.quiz.AppDatabase;
 import com.example.quiz.Pokemon;
 import com.example.quiz.R;
 
 import java.io.IOException;
-=======
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
->>>>>>> c31df40bc3989f080da1881075ac4cc1a9115c55:app/src/main/java/com/example/quiz/AddEntryActivity.java
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -117,17 +113,11 @@ public class AddEntryActivity extends AppCompatActivity {
             db.pokemonDAO().insertAll(pokemon);
             db.pokemonDAO().updateUsers(pokemon);
 
-<<<<<<< HEAD:app/src/main/java/com/example/quiz/ui/main/AddEntryActivity.java
-                List<Pokemon> pokemonList = db.pokemonDAO().getAll();
-                for(Pokemon a : pokemonList){
-                    System.out.println("Navn: " + a.getName());
+                LiveData<List<Pokemon>> pokemonList = db.pokemonDAO().getAllPokemons();
                     AnswersActivity.addQuestion(picture, answer);
 
-                }
             System.out.println("POKEMON: " + db.pokemonDAO().find(answer));
-            System.out.println("Poke ans: " + db.pokemonDAO().getAll());
-=======
->>>>>>> c31df40bc3989f080da1881075ac4cc1a9115c55:app/src/main/java/com/example/quiz/AddEntryActivity.java
+            System.out.println("Poke ans: " + db.pokemonDAO().getAllPokemons());
         }
         finish();
     }

@@ -11,10 +11,10 @@ import java.util.List;
 public class PokemonRepository {
     private MutableLiveData<List<Pokemon>> searchResults =
             new MutableLiveData<>();
-    private List<Pokemon> allPokemons;
+    private LiveData<List<Pokemon>> allPokemons;
     private PokemonDAO pokemonDAO;
 
-    public List<Pokemon> getAllPokemons() {
+    public LiveData<List<Pokemon>> getAllPokemons() {
         return allPokemons;
     }
 
@@ -26,7 +26,7 @@ public class PokemonRepository {
         AppDatabase db;
         db = AppDatabase.getDatabase(application);
         pokemonDAO = db.pokemonDAO();
-        allPokemons = pokemonDAO.getAll();
+        allPokemons = pokemonDAO.getAllPokemons();
     }
 
     public void insertPokemon(Pokemon pokemon) {
@@ -100,3 +100,4 @@ public class PokemonRepository {
         }
     }
 }
+
