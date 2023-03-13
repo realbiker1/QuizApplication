@@ -20,7 +20,7 @@ public interface PokemonDAO {
 
     @Query("SELECT * FROM pokemons")
     List<Pokemon> getAll();
-
+    @Query("DELETE FROM pokemons") void nukeTable();
     @Update
     void updateUsers(Pokemon pokemon);
 

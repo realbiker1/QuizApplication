@@ -12,8 +12,13 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.os.Bundle;
 
+<<<<<<< HEAD:app/src/main/java/com/example/quiz/ui/main/MainActivity.java
 import com.example.quiz.AppDatabase;
 import com.example.quiz.R;
+=======
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+>>>>>>> c31df40bc3989f080da1881075ac4cc1a9115c55:app/src/main/java/com/example/quiz/MainActivity.java
 
 public class MainActivity extends AppCompatActivity {
  public static boolean initialized = false;
@@ -29,8 +34,13 @@ public class MainActivity extends AppCompatActivity {
         Bitmap q2 = BitmapFactory.decodeResource(getResources(), R.drawable.charmander);
         Bitmap q1 = BitmapFactory.decodeResource(getResources(), R.drawable.marill);
 
+<<<<<<< HEAD:app/src/main/java/com/example/quiz/ui/main/MainActivity.java
 
 
+=======
+        AppDatabase db = Room.databaseBuilder(getApplicationContext(),AppDatabase.class,"pokemons").allowMainThreadQueries().build();
+        db.pokemonDAO().nukeTable();
+>>>>>>> c31df40bc3989f080da1881075ac4cc1a9115c55:app/src/main/java/com/example/quiz/MainActivity.java
         AnswersActivity.initializeQuestions(q1, q2, q3);
         initialized = true;
     }
@@ -38,11 +48,13 @@ public class MainActivity extends AppCompatActivity {
         // Launches the quiz activity
         Button quizBtn = findViewById(R.id.quizBtn);
         quizBtn.setOnClickListener(view -> {
-            Bundle b = new Bundle();
-            b.putBoolean("choice", false);
+            AppDatabase db = Room.databaseBuilder(getApplicationContext(),AppDatabase.class,"pokemons").allowMainThreadQueries().build();
+            for(Pokemon x : db.pokemonDAO().getAll()){
+                AnswersActivity.addQuestion(convertByteToBitmap(x.getBitmap()),x.getName());
+            }
             Intent intent = new Intent(MainActivity.this, QuizActivity.class);
-            intent.putExtras(b);
-            startActivity(intent);
+            intent.putExtra("choice",false);
+          startActivity(intent);
         });
 
         // Launches the Answers activity
@@ -90,5 +102,10 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+    public Bitmap convertByteToBitmap(byte [] picture){
+        InputStream targetStream = new ByteArrayInputStream(picture);
+
+        return BitmapFactory.decodeStream(targetStream);
     }
 }

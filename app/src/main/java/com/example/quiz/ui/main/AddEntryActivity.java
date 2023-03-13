@@ -3,6 +3,10 @@ package com.example.quiz.ui.main;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+<<<<<<< HEAD:app/src/main/java/com/example/quiz/ui/main/AddEntryActivity.java
+=======
+import androidx.core.content.res.ResourcesCompat;
+>>>>>>> c31df40bc3989f080da1881075ac4cc1a9115c55:app/src/main/java/com/example/quiz/AddEntryActivity.java
 import androidx.room.Room;
 
 import android.app.Activity;
@@ -15,11 +19,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+<<<<<<< HEAD:app/src/main/java/com/example/quiz/ui/main/AddEntryActivity.java
 import com.example.quiz.AppDatabase;
 import com.example.quiz.Pokemon;
 import com.example.quiz.R;
 
 import java.io.IOException;
+=======
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+>>>>>>> c31df40bc3989f080da1881075ac4cc1a9115c55:app/src/main/java/com/example/quiz/AddEntryActivity.java
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -102,15 +112,12 @@ public class AddEntryActivity extends AppCompatActivity {
         String answer = answerText.getText().toString();
         System.out.println("Added image with answer " + answer);
         if (picture != null && !answer.equals("")) {
-            int size = picture.getRowBytes() * picture.getHeight();
-            ByteBuffer byteBuffer = ByteBuffer.allocate(size);
-            picture.copyPixelsToBuffer(byteBuffer);
-            byte[] byteArray = byteBuffer.array();
-            Pokemon pokemon = new Pokemon(answer,byteArray);
+            Pokemon pokemon = new Pokemon(answer,convertBitmapToByte(picture));
             AppDatabase db = Room.databaseBuilder(getApplicationContext(),AppDatabase.class,"pokemons").allowMainThreadQueries().build();
             db.pokemonDAO().insertAll(pokemon);
             db.pokemonDAO().updateUsers(pokemon);
 
+<<<<<<< HEAD:app/src/main/java/com/example/quiz/ui/main/AddEntryActivity.java
                 List<Pokemon> pokemonList = db.pokemonDAO().getAll();
                 for(Pokemon a : pokemonList){
                     System.out.println("Navn: " + a.getName());
@@ -119,7 +126,21 @@ public class AddEntryActivity extends AppCompatActivity {
                 }
             System.out.println("POKEMON: " + db.pokemonDAO().find(answer));
             System.out.println("Poke ans: " + db.pokemonDAO().getAll());
+=======
+>>>>>>> c31df40bc3989f080da1881075ac4cc1a9115c55:app/src/main/java/com/example/quiz/AddEntryActivity.java
         }
         finish();
+    }
+
+    public Bitmap convertByteToBitmap(byte [] picture){
+        InputStream targetStream = new ByteArrayInputStream(picture);
+
+        return BitmapFactory.decodeStream(targetStream);
+    }
+    public byte [] convertBitmapToByte(Bitmap bitmap){
+        int size = bitmap.getRowBytes() * bitmap.getHeight();
+        ByteBuffer byteBuffer = ByteBuffer.allocate(size);
+        bitmap.copyPixelsToBuffer(byteBuffer);
+        return byteBuffer.array();
     }
 }
