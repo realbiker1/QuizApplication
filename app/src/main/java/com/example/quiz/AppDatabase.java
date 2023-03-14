@@ -1,10 +1,13 @@
 package com.example.quiz;
 
 import android.content.Context;
+import android.os.AsyncTask;
 
+import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
 import androidx.room.Room;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 @Database(entities = {Pokemon.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
@@ -18,7 +21,8 @@ public abstract class AppDatabase extends RoomDatabase {
                     INSTANCE =
                             Room.databaseBuilder(context.getApplicationContext(),
                                     AppDatabase.class,
-                                    "pokemons").build();
+                                    "pokemons")
+                                    .build();
                 }
             }
         }

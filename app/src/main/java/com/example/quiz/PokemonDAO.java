@@ -13,7 +13,7 @@ import java.util.List;
 public interface PokemonDAO {
 
     @Insert
-    void insertAll(Pokemon... pokemon);
+    void insert(Pokemon pokemon);
 
     @Delete
     void delete(Pokemon pokemon);
@@ -22,7 +22,7 @@ public interface PokemonDAO {
     LiveData<List<Pokemon>> getAllPokemons();
     @Query("DELETE FROM pokemons") void nukeTable();
     @Update
-    void updateUsers(Pokemon pokemon);
+    void update(Pokemon pokemon);
 
     @Query("SELECT * FROM pokemons WHERE name = :name")
     List<Pokemon> find(String name);

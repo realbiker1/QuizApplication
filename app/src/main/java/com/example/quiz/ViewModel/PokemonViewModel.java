@@ -1,23 +1,23 @@
-package com.example.quiz.ViewModels;
+package com.example.quiz.ViewModel;
 
 import android.app.Application;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.example.quiz.Pokemon;
 import com.example.quiz.PokemonRepository;
 
 import java.util.List;
 
-public class AnswersViewModel extends AndroidViewModel {
+public class PokemonViewModel extends AndroidViewModel {
 
 
     private PokemonRepository repository;
     private LiveData<List<Pokemon>> allPokemons;
 
-    public AnswersViewModel (Application application) {
+    public PokemonViewModel(@NonNull Application application) {
         super(application);
         repository = new PokemonRepository(application);
         allPokemons = repository.getAllPokemons();
@@ -27,10 +27,14 @@ public class AnswersViewModel extends AndroidViewModel {
         return allPokemons;
     }
 
-    public void insertProduct(Pokemon pokemon) {
-        repository.insertPokemon(pokemon);
+    public void insertPokemon(Pokemon pokemon) {
+        repository.insert(pokemon);
     }
+    public void deletePokemon(Pokemon pokemon) { repository.delete(pokemon);}
 
+    public  void updatePokemon(Pokemon pokemon) {repository.update(pokemon);}
+
+    public void nuke() {repository.deleteAllPokemons();}
 
     }
 

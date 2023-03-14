@@ -1,7 +1,7 @@
 package com.example.quiz.ui.main;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.Room;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,38 +12,45 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.os.Bundle;
 
-import com.example.quiz.AppDatabase;
 import com.example.quiz.Pokemon;
 import com.example.quiz.R;
+import com.example.quiz.ViewModel.PokemonViewModel;
+
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
  public static boolean initialized = false;
+
+ private PokemonViewModel viewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-    if(!initialized) {
-        // Initialize question list, can be accessed regardless of what activity started first
-        Bitmap q3 = BitmapFactory.decodeResource(getResources(), R.drawable.bulbasaur);
-        Bitmap q2 = BitmapFactory.decodeResource(getResources(), R.drawable.charmander);
-        Bitmap q1 = BitmapFactory.decodeResource(getResources(), R.drawable.marill);
+        if(!initialized) {
+
+            viewModel = ViewModelProviders.of(this).get(PokemonViewModel.class);
+            viewModel.nuke();
+
+            // Initialize question list, can be accessed regardless of what activity started first
+            Bitmap q3 = BitmapFactory.decodeResource(getResources(), R.drawable.bulbasaur);
+            Bitmap q2 = BitmapFactory.decodeResource(getResources(), R.drawable.charmander);
+            Bitmap q1 = BitmapFactory.decodeResource(getResources(), R.drawable.marill);
+
+            viewModel.insertPokemon(new Pokemon("bulbasaur",convertToByteArray(q3)));
+            viewModel.insertPokemon(new Pokemon("charmander",convertToByteArray(q2)));
+            viewModel.insertPokemon(new Pokemon("marill",convertToByteArray(q1)));
 
 
+            initialized = true;
+        }
 
-
-        AppDatabase db = Room.databaseBuilder(getApplicationContext(),AppDatabase.class,"pokemons").allowMainThreadQueries().build();
-        db.pokemonDAO().nukeTable();
-        AnswersActivity.initializeQuestions(q1, q2, q3);
-        initialized = true;
-    }
 
         // Launches the quiz activity
         Button quizBtn = findViewById(R.id.quizBtn);
         quizBtn.setOnClickListener(view -> {
-            AppDatabase db = Room.databaseBuilder(getApplicationContext(),AppDatabase.class,"pokemons").allowMainThreadQueries().build();
             Intent intent = new Intent(MainActivity.this, QuizActivity.class);
             intent.putExtra("choice",false);
           startActivity(intent);
@@ -62,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, AddEntryActivity.class);
             startActivity(intent);
         });
+
+
     }
 
     @Override
@@ -99,5 +108,12 @@ public class MainActivity extends AppCompatActivity {
         InputStream targetStream = new ByteArrayInputStream(picture);
 
         return BitmapFactory.decodeStream(targetStream);
+    }
+    public  byte[] convertToByteArray(Bitmap bitmap) {
+
+        ByteArrayOutputStream blob = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0 /* Ignored for PNGs */, blob);
+      return blob.toByteArray();
+
     }
 }

@@ -9,44 +9,96 @@ import androidx.lifecycle.MutableLiveData;
 import java.util.List;
 
 public class PokemonRepository {
-    private MutableLiveData<List<Pokemon>> searchResults =
-            new MutableLiveData<>();
+    private PokemonDAO pokemonDao;
     private LiveData<List<Pokemon>> allPokemons;
-    private PokemonDAO pokemonDAO;
+
+    public PokemonRepository(Application application) {
+        AppDatabase database = AppDatabase.getDatabase(application);
+        pokemonDao = database.pokemonDAO();
+        allPokemons = pokemonDao.getAllPokemons();
+    }
+
+    public void insert(Pokemon p) {
+        new InsertPokemonAsyncTask(pokemonDao).execute(p);
+    }
+
+    public void update(Pokemon p) {
+        new UpdatePokemonAsyncTask(pokemonDao).execute(p);
+    }
+
+    public void delete(Pokemon p) {
+
+        new DeletePokemonAsyncTask(pokemonDao).execute(p);
+    }
+
+    public void deleteAllPokemons() {
+
+        new DeleteAllPokemonAsyncTask(pokemonDao).execute();
+    }
+    public void findPokemon(String name) {
+        QueryAsyncTask task = new QueryAsyncTask(pokemonDao);
+        task.delegate = this;
+        task.execute(name);
+    }
 
     public LiveData<List<Pokemon>> getAllPokemons() {
         return allPokemons;
     }
 
-    public MutableLiveData<List<Pokemon>> getSearchResults() {
-        return searchResults;
+    private static class InsertPokemonAsyncTask extends AsyncTask<Pokemon, Void, Void> {
+        private PokemonDAO pokemonDAO;
+
+        private InsertPokemonAsyncTask(PokemonDAO pokemonDAO) {
+            this.pokemonDAO = pokemonDAO;
+        }
+
+        @Override
+        protected Void doInBackground(Pokemon... p) {
+            pokemonDAO.insert(p[0]);
+            return null;
+        }
     }
 
-    public PokemonRepository(Application application) {
-        AppDatabase db;
-        db = AppDatabase.getDatabase(application);
-        pokemonDAO = db.pokemonDAO();
-        allPokemons = pokemonDAO.getAllPokemons();
+    private static class UpdatePokemonAsyncTask extends AsyncTask<Pokemon, Void, Void> {
+        private PokemonDAO pokemonDAO;
+
+        private UpdatePokemonAsyncTask(PokemonDAO pokemonDAO) {
+            this.pokemonDAO = pokemonDAO;
+        }
+
+        @Override
+        protected Void doInBackground(Pokemon... p) {
+            pokemonDAO.update(p[0]);
+            return null;
+        }
     }
 
-    public void insertPokemon(Pokemon pokemon) {
-        InsertAsyncTask task = new InsertAsyncTask(pokemonDAO);
-        task.execute(pokemon);
+    private static class DeletePokemonAsyncTask extends AsyncTask<Pokemon, Void, Void> {
+        private PokemonDAO pokemonDAO;
+
+        private DeletePokemonAsyncTask(PokemonDAO pokemonDao) {
+            this.pokemonDAO = pokemonDao;
+        }
+
+        @Override
+        protected Void doInBackground(Pokemon... p) {
+            pokemonDAO.delete(p[0]);
+            return null;
+        }
     }
 
-    public void deletePokemon(Pokemon pokemon) {
-        DeleteAsyncTask task = new DeleteAsyncTask(pokemonDAO);
-        task.execute(pokemon);
-    }
+    private static class DeleteAllPokemonAsyncTask extends AsyncTask<Void, Void, Void> {
+        private PokemonDAO pokemonDAO;
 
-    public void findPokemon(String name) {
-        QueryAsyncTask task = new QueryAsyncTask(pokemonDAO);
-        task.delegate = this;
-        task.execute(name);
-    }
+        private DeleteAllPokemonAsyncTask(PokemonDAO pokemonDao) {
+            this.pokemonDAO = pokemonDao;
+        }
 
-    private void asyncFinished(List<Pokemon> results) {
-        searchResults.setValue(results);
+        @Override
+        protected Void doInBackground(Void... voids) {
+            pokemonDAO.nukeTable();
+            return null;
+        }
     }
 
     private static class QueryAsyncTask extends
@@ -63,41 +115,6 @@ public class PokemonRepository {
         protected List<Pokemon> doInBackground(final String... params) {
             return asyncTaskDao.find(params[0]);
         }
-
-        @Override
-        protected void onPostExecute(List<Pokemon> result) {
-            delegate.asyncFinished(result);
-        }
     }
-
-    private static class InsertAsyncTask extends AsyncTask<Pokemon, Void, Void> {
-
-        private PokemonDAO asyncTaskDao;
-
-        InsertAsyncTask(PokemonDAO dao) {
-            asyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(final Pokemon... params) {
-            asyncTaskDao.insertAll(params[0]);
-            return null;
-        }
     }
-
-    private static class DeleteAsyncTask extends AsyncTask<Pokemon, Void, Void> {
-
-        private PokemonDAO asyncTaskDao;
-
-        DeleteAsyncTask(PokemonDAO dao) {
-            asyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(final Pokemon... params) {
-            asyncTaskDao.delete(params[0]);
-            return null;
-        }
-    }
-}
 

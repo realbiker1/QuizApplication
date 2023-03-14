@@ -6,51 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.AnswersActivity">
 
-    <ScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:id="@+id/ansContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:fontFamily="@font/archivo_black"
-                android:shadowColor="#000000"
-                android:shadowDx="2"
-                android:shadowDy="2"
-                android:shadowRadius="2"
-                android:text="Answers"
-                android:textColor="#FFA500"
-                android:background="#E0E0E0"
-                android:textSize="34sp" />
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="#000000" />
-            <Button
-                android:id="@+id/exit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/Sort"
-                android:layout_marginTop="20dp"
-                android:background="@color/exit"
-                android:shadowColor="@color/exit"
-                android:text="Exit" />
-            <Button
-                android:id="@+id/Sort"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sort" />
-        </LinearLayout>
-    </ScrollView>
+        android:layout_height="match_parent"
+        android:text="Hello World!"
+        tools:listitem="@layout/pokemon_list"
 
 
-
+        ></androidx.recyclerview.widget.RecyclerView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
