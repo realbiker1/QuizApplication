@@ -1,4 +1,4 @@
-name: Generate Multi-Language SBOM with CycloneDX
+name: Generate Multi-Language SBOM with CycloneDX.
 
 on:
   push:
