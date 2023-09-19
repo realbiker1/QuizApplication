@@ -57,7 +57,7 @@ jobs:
         fi
         
     - name: Setup Python environment and generate Python SBOM (if applicable)
-      if: env.PYTHON_PROJECT = 'true'
+      if: env.PYTHON_PROJECT == 'true'
       run: |
         echo "Setting up Python environment..."
         python -m pip install --upgrade pip
