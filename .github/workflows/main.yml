@@ -108,41 +108,43 @@ jobs:
     - name: Check if the project uses Gradle and get Java version
       id: check-gradle
       run: |
-        set +e # Disable immediate exit
+        set +e
         if [ -f "build.gradle" ]; then
           echo "Gradle project detected."
           echo "GRADLE_PROJECT=true" >> $GITHUB_ENV
           
           java_version=$(grep -oP 'sourceCompatibility = \K[^\s]+' build.gradle || echo "")
           if [ -z "$java_version" ]; then
-            echo "Java version not specified in build.gradle. Using default version (11)."
+            echo "Java version not specified. Using default (11)."
             echo "JAVA_VERSION=11" >> $GITHUB_ENV
           else
-            echo "Detected Java version $java_version."
+            echo "Java version $java_version detected."
             echo "JAVA_VERSION=$java_version" >> $GITHUB_ENV
           fi
         else
           echo "No Gradle project detected."
           echo "GRADLE_PROJECT=false" >> $GITHUB_ENV
         fi
-        set -e # Re-enable immediate exit
+        set -e
     
     - name: Setup Java environment and generate Gradle SBOM (if applicable)
       if: env.GRADLE_PROJECT == 'true'
       run: |
         chmod +x ./gradlew
         echo "Setting up Java environment with Java ${{ env.JAVA_VERSION }}..."
-        sudo apt-get update # Update package lists
-        sudo apt-get install -y openjdk-${{ env.JAVA_VERSION }}-jdk # Force install
+        sudo apt-get update
+        sudo apt-get install -y openjdk-${{ env.JAVA_VERSION }}-jdk
         
-        echo "Applying CycloneDX plugin to build.gradle..."
-        echo "plugins { id 'org.cyclonedx.bom' version '1.7.4' }" >> build.gradle
+        echo "Applying CycloneDX plugin..."
+        echo "plugins { id 'org.cyclonedx.bom' version '1.7.4' }" >> temp.gradle
+        cat build.gradle >> temp.gradle
+        mv temp.gradle build.gradle
         
-        echo "Building the project and generating Gradle SBOM for Release variant..."
-        ./gradlew clean assembleRelease cyclonedxReleaseBom
+        echo "Generating SBOM..."
+        ./gradlew clean cyclonedxBom
         
-        echo "Moving SBOM to specified directory..."
-        mkdir -p sboms # Create directory if it doesn't exist
+        echo "Moving SBOM..."
+        mkdir -p sboms
         mv build/reports/bom.xml sboms/bom-gradle
     ## Gradle END
     ## JAVA END
