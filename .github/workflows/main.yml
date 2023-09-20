@@ -140,8 +140,8 @@ jobs:
         cat build.gradle >> temp.gradle
         mv temp.gradle build.gradle
         
-        echo "Generating SBOM..."
-        ./gradlew clean cyclonedxBom
+        echo "Generating SBOM for debug variant..."
+        ./gradlew clean :app:cyclonedxBom -Pcyclonedx.module=:app -Pcyclonedx.variant=debug
         
         echo "Moving SBOM..."
         mkdir -p sboms
