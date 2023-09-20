@@ -31,18 +31,17 @@ jobs:
         fi
     
     - name: Setup Node.js environment and Generate SBOM (if applicable)
+      if: env.NODE_PROJECT == 'true'
       run: |
-        if [ "$NODE_PROJECT" = "true" ]; then
+        echo "Installing Node.js dependencies..."
+        npm install
 
-          echo "Installing Node.js dependencies..."
-          npm install
+        echo "Installing CycloneDX..."
+        npm install -g cyclonedx-bom
 
-          echo "Installing CycloneDX..."
-          npm install -g cyclonedx-bom
-
-          echo "Generating Node.js SBOM..."
-          cyclonedx-bom -o sboms/bom-node.xml
-        fi
+        echo "Generating Node.js SBOM..."
+        cyclonedx-bom -o sboms/bom-node.xml
+    # Node.js END
 
     # Python
     - name: Check if the project uses Python
@@ -65,8 +64,10 @@ jobs:
         
         echo "Generating Python SBOM..."
         cyclonedx-py -i requirements.txt -o sboms/bom-python.xml
+    # Python END
 
-    # Maven (Java)
+    # Java
+    ## Maven
     - name: Check if the project uses Maven and get Java version
       id: check-maven
       run: | # Checks if the project has the pom.xml file.
@@ -101,6 +102,47 @@ jobs:
         echo "Building the project and generating Java SBOM..."
         mvn clean install cyclonedx:makeAggregateBom
         cp target/bom.xml sboms/bom-maven.xml
+    ## Maven END
+
+    ## Gradle
+    - name: Check if the project uses Gradle and get Java version
+      id: check-gradle
+      run: |
+        set +e # Disable immediate exit
+        if [ -f "build.gradle" ]; then
+          echo "Gradle project detected."
+          echo "GRADLE_PROJECT=true" >> $GITHUB_ENV
+          
+          java_version=$(grep -oP 'sourceCompatibility = \K[^\s]+' build.gradle || echo "")
+          if [ -z "$java_version" ]; then
+            echo "Java version not specified in build.gradle. Using default version (11)."
+            echo "JAVA_VERSION=11" >> $GITHUB_ENV
+          else
+            echo "Detected Java version $java_version."
+            echo "JAVA_VERSION=$java_version" >> $GITHUB_ENV
+          fi
+        else
+          echo "No Gradle project detected."
+          echo "GRADLE_PROJECT=false" >> $GITHUB_ENV
+        fi
+        set -e # Re-enable immediate exit
+
+    - name: Setup Java environment and generate Gradle SBOM (if applicable)
+      if: env.GRADLE_PROJECT == 'true'
+      run: |
+        echo "Setting up Java environment with Java ${{ env.JAVA_VERSION }}..."
+        sudo apt-get install openjdk-${{ env.JAVA_VERSION }}-jdk
+        
+        echo "Applying CycloneDX plugin to build.gradle..."
+        echo "plugins { id 'org.cyclonedx.bom' version '2.5.1' }" >> build.gradle
+        
+        echo "Building the project and generating Gradle SBOM..."
+        ./gradlew clean build cyclonedx
+
+        echo "Moving SBOM to specified directory..."
+        mv build/reports/bom.xml sboms/bom-gradle¨
+    ## Gradle END
+    ## JAVA END
 
     # .NET  
     - name: Check if the project uses .NET and get .NET version
@@ -127,18 +169,17 @@ jobs:
 
     - name: Setup .NET environment and generate .NET SBOM (if applicable)
       if: env.DOTNET_PROJECT == 'true'
-      run: | 
+      run: |
         echo "Setting up .NET environment for .NET ${{ env.DOTNET_VERSION }}..."
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-    
+        dotnet --version
         echo "Building the .NET project..."
         dotnet build
-    
         echo "Generating .NET SBOM..."
         dotnet tool install --global CycloneDX
         dotnet cyclonedx -o sboms/bom-dotnet.xml
+      env:
+        DOTNET_VERSION: ${{ env.DOTNET_VERSION }}
+    # .NET END
       
     # Archive all SBOMs
     - name: Archive SBOMs
@@ -149,4 +190,5 @@ jobs:
           ./sboms/bom-node.xml
           ./sboms/bom-python.xml
           ./sboms/bom-maven.xml
+          ./sboms/bom-gradle.xml
           ./sboms/bom-dotnet.xml 
