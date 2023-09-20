@@ -105,47 +105,35 @@ jobs:
     ## Maven END
 
     ## Gradle
-    - name: Check if the project uses Gradle and get Java version
-      id: check-gradle
-      run: |
-        set +e
-        if [ -f "build.gradle" ]; then
-          echo "Gradle project detected."
-          echo "GRADLE_PROJECT=true" >> $GITHUB_ENV
-          
-          java_version=$(grep -oP 'sourceCompatibility = \K[^\s]+' build.gradle || echo "")
-          if [ -z "$java_version" ]; then
-            echo "Java version not specified. Using default (11)."
-            echo "JAVA_VERSION=11" >> $GITHUB_ENV
-          else
-            echo "Java version $java_version detected."
-            echo "JAVA_VERSION=$java_version" >> $GITHUB_ENV
-          fi
-        else
-          echo "No Gradle project detected."
-          echo "GRADLE_PROJECT=false" >> $GITHUB_ENV
-        fi
-        set -e
-    
     - name: Setup Java environment and generate Gradle SBOM (if applicable)
-      if: env.GRADLE_PROJECT == 'true'
       run: |
-        chmod +x ./gradlew
-        echo "Setting up Java environment with Java ${{ env.JAVA_VERSION }}..."
+        echo "Checking for Gradle Wrapper..."
+        if [ -f "./gradlew" ]; then
+          echo "Using Gradle Wrapper."
+          chmod +x ./gradlew
+        else
+          echo "Gradle Wrapper not found. Installing Gradle."
+          sudo apt-get update
+          sudo apt-get install gradle
+        fi
+    
+        echo "Setting up Java environment..."
         sudo apt-get update
-        sudo apt-get install -y openjdk-${{ env.JAVA_VERSION }}-jdk
-        
-        echo "Applying CycloneDX plugin..."
-        echo "plugins { id 'org.cyclonedx.bom' version '1.7.4' }" >> temp.gradle
+        sudo apt-get install -y openjdk-11-jdk
+    
+        echo "Applying CycloneDX plugin dynamically..."
+        echo "plugins { id 'org.cyclonedx.bom' version '1.7.4' }" > temp.gradle
         cat build.gradle >> temp.gradle
         mv temp.gradle build.gradle
+    
+        echo "Syncing project to apply changes..."
+        ./gradlew --refresh-dependencies
         
-        echo "Generating SBOM for debug variant..."
-        ./gradlew clean :app:cyclonedxBom -Pcyclonedx.module=:app -Pcyclonedx.variant=debug
-        
-        echo "Moving SBOM..."
-        mkdir -p sboms
-        mv build/reports/bom.xml sboms/bom-gradle
+        echo "Listing available tasks to debug..."
+        ./gradlew tasks --all
+    
+        echo "Generating SBOM..."
+        ./gradlew cyclonedxBom
     ## Gradle END
     ## JAVA END
 
