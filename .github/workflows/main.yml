@@ -138,9 +138,9 @@ jobs:
         echo "Applying CycloneDX plugin to build.gradle..."
         echo "plugins { id 'org.cyclonedx.bom' version '1.7.4' }" >> build.gradle
         
-        echo "Building the project and generating Gradle SBOM..."
-        ./gradlew clean build cyclonedx
-    
+        echo "Building the project and generating Gradle SBOM for Release variant..."
+        ./gradlew clean assembleRelease cyclonedxReleaseBom
+        
         echo "Moving SBOM to specified directory..."
         mkdir -p sboms # Create directory if it doesn't exist
         mv build/reports/bom.xml sboms/bom-gradle
