@@ -136,7 +136,7 @@ jobs:
         sudo apt-get install -y openjdk-${{ env.JAVA_VERSION }}-jdk # Force install
         
         echo "Applying CycloneDX plugin to build.gradle..."
-        echo "plugins { id 'org.cyclonedx.bom' version '2.5.1' }" >> build.gradle
+        echo "plugins { id 'org.cyclonedx.bom' version '1.7.4' }" >> build.gradle
         
         echo "Building the project and generating Gradle SBOM..."
         ./gradlew clean build cyclonedx
