@@ -41,7 +41,6 @@ jobs:
 
         echo "Generating Node.js SBOM..."
         cyclonedx-bom -o sboms/bom-node.xml
-    # Node.js END
 
     # Python
     - name: Check if the project uses Python
@@ -64,10 +63,8 @@ jobs:
         
         echo "Generating Python SBOM..."
         cyclonedx-py -i requirements.txt -o sboms/bom-python.xml
-    # Python END
 
-    # Java
-    ## Maven
+    # Maven (Java)
     - name: Check if the project uses Maven and get Java version
       id: check-maven
       run: | # Checks if the project has the pom.xml file.
@@ -102,62 +99,53 @@ jobs:
         echo "Building the project and generating Java SBOM..."
         mvn clean install cyclonedx:makeAggregateBom
         cp target/bom.xml sboms/bom-maven.xml
-    ## Maven END
 
-    ## Gradle
+        # Gradle (Java)
     - name: Check if the project uses Gradle and get Java version
       id: check-gradle
       run: |
-        set +e
+        set +e # Disable immediate exit
         if [ -f "build.gradle" ]; then
           echo "Gradle project detected."
           echo "GRADLE_PROJECT=true" >> $GITHUB_ENV
           
           java_version=$(grep -oP 'sourceCompatibility = \K[^\s]+' build.gradle || echo "")
           if [ -z "$java_version" ]; then
-            echo "Java version not specified. Using default (11)."
+            echo "Java version not specified in build.gradle. Using default version (11)."
             echo "JAVA_VERSION=11" >> $GITHUB_ENV
           else
-            echo "Java version $java_version detected."
+            echo "Detected Java version $java_version."
             echo "JAVA_VERSION=$java_version" >> $GITHUB_ENV
           fi
         else
           echo "No Gradle project detected."
           echo "GRADLE_PROJECT=false" >> $GITHUB_ENV
         fi
-        set -e
+        set -e # Re-enable immediate exit
+
+    - name: Setup Java
+      if: env.GRADLE_PROJECT == 'true'
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: ${{ env.JAVA_VERSION }}
     
-    - name: Setup Java environment and generate Gradle SBOM (if applicable)
-      run: |
-        echo "Checking for Gradle Wrapper..."
-        if [ -f "./gradlew" ]; then
-          echo "Using Gradle Wrapper."
-          chmod +x ./gradlew
-        else
-          echo "Gradle Wrapper not found. Installing Gradle."
-          sudo apt-get update
-          sudo apt-get install gradle
-        fi
+    - name: Cache Gradle dependencies
+      if: env.GRADLE_PROJECT == 'true'
+      uses: actions/cache@v2
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
     
-        echo "Setting up Java environment..."
-        sudo apt-get update
-        sudo apt-get install -y openjdk-11-jdk
-    
-        echo "Applying CycloneDX plugin dynamically..."
-        echo "plugins { id 'org.cyclonedx.bom' version '1.7.4' }" > temp.gradle
-        cat build.gradle >> temp.gradle
-        mv temp.gradle build.gradle
-    
-        echo "Syncing project to apply changes..."
-        ./gradlew --refresh-dependencies
-        
-        echo "Listing available tasks to debug..."
-        ./gradlew tasks --all
-    
-        echo "Generating SBOM..."
-        ./gradlew cyclonedxBom
-    ## Gradle END
-    ## JAVA END
+    - name: Grant execute permission for gradlew
+      if: env.GRADLE_PROJECT == 'true'
+      run: chmod +x gradlew
+  
+    - name: Generate SBOM with CycloneDX
+      if: env.GRADLE_PROJECT == 'true'
+      run: ./gradlew cyclonedxBom
 
     # .NET  
     - name: Check if the project uses .NET and get .NET version
@@ -184,17 +172,18 @@ jobs:
 
     - name: Setup .NET environment and generate .NET SBOM (if applicable)
       if: env.DOTNET_PROJECT == 'true'
-      run: |
+      run: | 
         echo "Setting up .NET environment for .NET ${{ env.DOTNET_VERSION }}..."
-        dotnet --version
+        uses: actions/setup-dotnet@v1                             # Uses in run statement is wrong fix later
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+    
         echo "Building the .NET project..."
         dotnet build
+    
         echo "Generating .NET SBOM..."
         dotnet tool install --global CycloneDX
         dotnet cyclonedx -o sboms/bom-dotnet.xml
-      env:
-        DOTNET_VERSION: ${{ env.DOTNET_VERSION }}
-    # .NET END
       
     # Archive all SBOMs
     - name: Archive SBOMs
